@@ -17,7 +17,13 @@ fn main() {
     let mut channel = sess.channel_session().unwrap();
     channel.exec("ls").unwrap();
     let mut s = String::new();
-    channel.read_to_string(&mut s).unwrap();
+    let mut result = channel.read_to_string(&mut s);
+    let mut retry_count = 10;
+    while result.is_err() && retry_count > 0 {
+        retry_count = retry_count - 1;
+        eprintln!("Retry. Remaining: {}", retry_count);
+        result = channel.read_to_string(&mut s);
+    }
     println!("{}", s);
     channel.wait_close();
     println!("{}", channel.exit_status().unwrap());
