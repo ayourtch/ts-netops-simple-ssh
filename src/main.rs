@@ -4,7 +4,9 @@ fn main() {
     use std::net::TcpStream;
 
     // Connect to the local SSH server
-    let tcp = TcpStream::connect("127.0.0.1:22").unwrap();
+    let ts_netops_host = std::env::var("TS_NETOPS_HOST").unwrap();
+    let tcp_target = format!("{}:22", ts_netops_host);
+    let tcp = TcpStream::connect(tcp_target).unwrap();
     let mut sess = Session::new().unwrap();
     sess.set_tcp_stream(tcp);
     sess.handshake().unwrap();
