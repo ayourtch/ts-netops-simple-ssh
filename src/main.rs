@@ -8,7 +8,9 @@ fn main() {
     let mut sess = Session::new().unwrap();
     sess.set_tcp_stream(tcp);
     sess.handshake().unwrap();
-    sess.userauth_agent("username").unwrap();
+    let ts_netops_user = std::env::var("TS_NETOPS_USER").unwrap();
+    let ts_netops_pass = std::env::var("TS_NETOPS_PASS").unwrap();
+    sess.userauth_password(&ts_netops_user, &ts_netops_pass).unwrap();
 
     let mut channel = sess.channel_session().unwrap();
     channel.exec("ls").unwrap();
