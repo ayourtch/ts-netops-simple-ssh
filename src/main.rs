@@ -3,6 +3,7 @@ fn main() {
     use std::io::prelude::*;
     use std::net::TcpStream;
 
+    let command_to_run = std::env::args().nth(1).unwrap();
     // Connect to the local SSH server
     let ts_netops_host = std::env::var("TS_NETOPS_HOST").unwrap();
     let tcp_target = format!("{}:22", ts_netops_host);
@@ -15,7 +16,7 @@ fn main() {
     sess.userauth_password(&ts_netops_user, &ts_netops_pass).unwrap();
 
     let mut channel = sess.channel_session().unwrap();
-    channel.exec("ls").unwrap();
+    channel.exec(&command_to_run).unwrap();
     let mut s = String::new();
     let mut result = channel.read_to_string(&mut s);
     let mut retry_count = 10;
